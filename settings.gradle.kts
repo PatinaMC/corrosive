@@ -1,4 +1,4 @@
-rootProject.name = "paperweight"
+rootProject.name = "corrosive"
 
 include("paperweight-core", "paperweight-lib", "paperweight-patcher")
 
