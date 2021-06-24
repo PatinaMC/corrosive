@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     id("org.gradle.kotlin.kotlin-dsl")
-    id("org.cadixdev.licenser")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -62,12 +61,7 @@ ktlint {
 tasks.register("format") {
     group = "formatting"
     description = "Formats source code according to project style"
-    dependsOn(tasks.licenseFormat, tasks.ktlintFormat)
-}
-
-license {
-    header.set(resources.text.fromFile(rootProject.file("license/copyright.txt")))
-    include("**/*.kt")
+    dependsOn(tasks.ktlintFormat)
 }
 
 idea {
