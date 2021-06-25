@@ -21,9 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import java.io.File
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.findByType
-import java.io.File
 
 val Project.toothpick: ToothpickExtension
     get() = rootProject.extensions.findByType(ToothpickExtension::class)!!

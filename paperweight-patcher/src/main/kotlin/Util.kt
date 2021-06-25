@@ -21,18 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.gradle.api.Project
 import java.io.File
 import java.util.*
 import kotlin.streams.asSequence
+import org.gradle.api.Project
 
 data class CmdResult(val exitCode: Int, val output: String?)
 
 fun Project.cmd(
-        vararg args: String,
-        dir: File = rootProject.projectDir,
-        printOut: Boolean = false,
-        environment: Map<String, String> = emptyMap()
+    vararg args: String,
+    dir: File = rootProject.projectDir,
+    printOut: Boolean = false,
+    environment: Map<String, String> = emptyMap()
 ): CmdResult {
     val process = ProcessBuilder().apply {
         command(*args)
@@ -42,23 +42,23 @@ fun Project.cmd(
     }.start()
     val output = process.inputStream.bufferedReader().use { reader ->
         reader.lines().asSequence()
-                .onEach {
-                    if (printOut) {
-                        logger.lifecycle(it)
-                    } else {
-                        logger.debug(it)
-                    }
+            .onEach {
+                if (printOut) {
+                    logger.lifecycle(it)
+                } else {
+                    logger.debug(it)
                 }
-                .toCollection(LinkedList())
-                .joinToString(separator = "\n")
+            }
+            .toCollection(LinkedList())
+            .joinToString(separator = "\n")
     }
     val exit = process.waitFor()
     return CmdResult(exit, output)
 }
 
 fun ensureSuccess(
-        cmd: CmdResult,
-        errorHandler: CmdResult.() -> Unit = {}
+    cmd: CmdResult,
+    errorHandler: CmdResult.() -> Unit = {}
 ): String? {
     val (exit, output) = cmd
     if (exit != 0) {
@@ -69,23 +69,23 @@ fun ensureSuccess(
 }
 
 fun Project.gitCmd(
-        vararg args: String,
-        dir: File = rootProject.projectDir,
-        printOut: Boolean = false,
-        environment: Map<String, String> = emptyMap()
+    vararg args: String,
+    dir: File = rootProject.projectDir,
+    printOut: Boolean = false,
+    environment: Map<String, String> = emptyMap()
 ): CmdResult =
-        cmd("git", *args, dir = dir, printOut = printOut)
+    cmd("git", *args, dir = dir, printOut = printOut)
 
 fun Project.bashCmd(
-        vararg args: String,
-        dir: File = rootProject.projectDir,
-        printOut: Boolean = false,
-        environment: Map<String, String> = emptyMap()
+    vararg args: String,
+    dir: File = rootProject.projectDir,
+    printOut: Boolean = false,
+    environment: Map<String, String> = emptyMap()
 ): CmdResult =
-        cmd("bash", "-c", *args, dir = dir, printOut = printOut)
+    cmd("bash", "-c", *args, dir = dir, printOut = printOut)
 
 internal fun String.applyReplacements(
-        vararg replacements: Pair<String, String>
+    vararg replacements: Pair<String, String>
 ): String {
     var result = this
     for ((key, value) in replacements) {
@@ -95,7 +95,7 @@ internal fun String.applyReplacements(
 }
 
 private fun Project.gitSigningEnabled(repo: File): Boolean =
-        gitCmd("config", "commit.gpgsign", dir = repo).output?.toBoolean() == true
+    gitCmd("config", "commit.gpgsign", dir = repo).output?.toBoolean() == true
 
 internal fun Project.temporarilyDisableGitSigning(repo: File): Boolean {
     val isCurrentlyEnabled = gitSigningEnabled(repo)
@@ -110,6 +110,6 @@ internal fun Project.reEnableGitSigning(repo: File) {
 }
 
 fun Project.gitHash(repo: File): String =
-        gitCmd("rev-parse", "HEAD", dir = repo).output ?: ""
+    gitCmd("rev-parse", "HEAD", dir = repo).output ?: ""
 
 val jenkins = System.getenv("JOB_NAME") != null

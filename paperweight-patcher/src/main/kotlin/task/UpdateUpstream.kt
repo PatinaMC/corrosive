@@ -26,6 +26,11 @@ package task
 import Upstream
 import ensureSuccess
 import gitCmd
+import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.util.stream.Collectors
 import org.apache.tools.ant.util.FileUtils
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -34,12 +39,6 @@ import taskGroup
 import toothpick
 import upstreamDir
 import upstreams
-import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.stream.Collectors
-
 
 internal fun Project.createUpdateUpstreamTask(
     receiver: Task.() -> Unit = {}
@@ -125,12 +124,14 @@ private fun updatePatch(
     currentPatchListFiltered: MutableList<String>?
 ) {
     if (currentPatchListFiltered == null || patchHasDiff(upstream, serverRepoPatches, patch, folder, currentPatchListFiltered)) {
-        fileUtils.copyFile("${upstream.repoPath}/patches/$folder/" +
+        fileUtils.copyFile(
+            "${upstream.repoPath}/patches/$folder/" +
                 "${String.format("%04d", serverRepoPatches.indexOf(patch) + 1)}-$patch",
             "${upstream.patchPath}/$folder/${String.format("%04d", i)}-$patch"
         )
     } else {
-        fileUtils.copyFile("${upstream.patchPath}/tmp/$folder/" +
+        fileUtils.copyFile(
+            "${upstream.patchPath}/tmp/$folder/" +
                 "${String.format("%04d", currentPatchListFiltered.indexOf(patch) + 1)}-$patch",
             "${upstream.patchPath}/$folder/${String.format("%04d", i)}-$patch"
         )
@@ -146,22 +147,30 @@ fun patchHasDiff(
 ): Boolean {
     if (!Paths.get("${upstream.patchPath}/tmp/$folder/${String.format("%04d", currentPatchListFiltered.indexOf(patch) + 1)}-$patch").toFile().isFile) return true
     if (!patchChanged(upstream, serverRepoPatches, patch, folder)) return false
-    val upstreamFile = Files.readAllLines(Paths.get("${upstream.repoPath}/patches/$folder/${String.format("%04d", serverRepoPatches.indexOf(patch) + 1)}-$patch"), StandardCharsets.UTF_8)
-    val repoFile = Files.readAllLines(Paths.get("${upstream.patchPath}/tmp/$folder/${String.format("%04d", currentPatchListFiltered.indexOf(patch) + 1)}-$patch"), StandardCharsets.UTF_8)
-    return upstreamFile.stream().filter {line -> line.startsWith("+") || line.startsWith("-")}
-        .filter {line -> if (line.startsWith("---") || line.startsWith("+++")) {
-            line.substring(3, line.length).trim().isNotBlank()
+    val upstreamFile = Files.readAllLines(
+        Paths.get("${upstream.repoPath}/patches/$folder/${String.format("%04d", serverRepoPatches.indexOf(patch) + 1)}-$patch"),
+        StandardCharsets.UTF_8
+    )
+    val repoFile = Files.readAllLines(
+        Paths.get("${upstream.patchPath}/tmp/$folder/${String.format("%04d", currentPatchListFiltered.indexOf(patch) + 1)}-$patch"),
+        StandardCharsets.UTF_8
+    )
+    return upstreamFile.stream().filter { line -> line.startsWith("+") || line.startsWith("-") }
+        .filter { line ->
+            if (line.startsWith("---") || line.startsWith("+++")) {
+                line.substring(3, line.length).trim().isNotBlank()
+            } else if (line.startsWith("--") || line.startsWith("++")) {
+                line.substring(2, line.length).trim().isNotBlank()
+            } else {
+                line.substring(1, line.length).trim().isNotBlank()
+            }
         }
-        else if (line.startsWith("--") || line.startsWith("++")) {
-            line.substring(2, line.length).trim().isNotBlank()
-        }
-        else {
-            line.substring(1, line.length).trim().isNotBlank()
-        } }
-        .filter {line -> if (repoFile.contains(line)) {
-            repoFile.remove(line)
-            return@filter false
-        } else { return@filter true } }.collect(Collectors.toList()).isNotEmpty()
+        .filter { line ->
+            if (repoFile.contains(line)) {
+                repoFile.remove(line)
+                return@filter false
+            } else { return@filter true }
+        }.collect(Collectors.toList()).isNotEmpty()
 }
 
 fun patchChanged(
@@ -170,7 +179,13 @@ fun patchChanged(
     patch: String,
     folder: String
 ): Boolean {
-    val diffCheckCmdResult = upstream.project.gitCmd("diff", "--name-only", upstream.upstreamCommit, upstream.getCurrentCommitHash(), dir = upstream.repoPath.toFile() )
+    val diffCheckCmdResult = upstream.project.gitCmd(
+        "diff",
+        "--name-only",
+        upstream.upstreamCommit,
+        upstream.getCurrentCommitHash(),
+        dir = upstream.repoPath.toFile()
+    )
     val diffCheckResult = diffCheckCmdResult.output.toString()
     if (diffCheckResult.isBlank()) return false
     val diffCheckChangeFiles = diffCheckResult.split("\\n".toRegex()).toTypedArray().toList()

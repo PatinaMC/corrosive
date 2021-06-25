@@ -21,13 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.gradle.api.Project
-import org.gradle.api.model.ObjectFactory
 import java.io.File
 import java.io.FileInputStream
 import java.util.*
 import java.util.stream.Collectors
 import kotlin.collections.ArrayList
+import org.gradle.api.Project
+import org.gradle.api.model.ObjectFactory
 
 @Suppress("UNUSED_PARAMETER")
 open class ToothpickExtension(objects: ObjectFactory) {
@@ -49,18 +49,18 @@ open class ToothpickExtension(objects: ObjectFactory) {
 
     var paperclipName: String? = null
     val calcPaperclipName
-        get() = paperclipName ?: "${forkNameLowercase}-paperclip.jar"
+        get() = paperclipName ?: "$forkNameLowercase-paperclip.jar"
 
     lateinit var serverProject: ToothpickSubproject
 
     lateinit var patchCreditsOutput: String
     lateinit var patchCreditsTemplate: String
 
-    lateinit var currentBranch : String
+    lateinit var currentBranch: String
     val currentBranchDisplayName
-        get() = currentBranch.replace("/${minecraftVersion}", "")
+        get() = currentBranch.replace("/$minecraftVersion", "")
     val calcVersionString
-        get() = "${minecraftVersion}-${nmsRevision}"
+        get() = "$minecraftVersion-$nmsRevision"
 
     fun server(receiver: ToothpickSubproject.() -> Unit) {
         serverProject = ToothpickSubproject()
@@ -84,14 +84,14 @@ open class ToothpickExtension(objects: ObjectFactory) {
             project.upstreamDir
         } else {
             project.upstreamDir.walk().find {
-                it.name == "Paper" && it.isDirectory
-                        && it.resolve("work/Minecraft/${minecraftVersion}").exists()
+                it.name == "Paper" && it.isDirectory &&
+                    it.resolve("work/Minecraft/$minecraftVersion").exists()
             } ?: error("Failed to find Paper directory!")
         }
     }
 
     val paperDecompDir: File
-        get() = paperDir.resolve("work/Minecraft/${minecraftVersion}")
+        get() = paperDir.resolve("work/Minecraft/$minecraftVersion")
 
     val paperWorkDir: File
         get() = paperDir.resolve("work")
@@ -103,14 +103,18 @@ open class ToothpickExtension(objects: ObjectFactory) {
         val prop = Properties()
         for (upstream in upstreams) {
             prop.load(FileInputStream(upstream))
-            upstreamArray.add(Upstream(prop.getProperty("name"),
-                prop.getProperty("useBlackList")!!.toBoolean(),
-                (prop.getProperty("list")),
-                rootProjectDir,
-                prop.getProperty("branch"),
-                Integer.parseInt(upstream.name.substring(0,4)),
-                project))
+            upstreamArray.add(
+                Upstream(
+                    prop.getProperty("name"),
+                    prop.getProperty("useBlackList")!!.toBoolean(),
+                    (prop.getProperty("list")),
+                    rootProjectDir,
+                    prop.getProperty("branch"),
+                    Integer.parseInt(upstream.name.substring(0, 4)),
+                    project
+                )
+            )
         }
-        return upstreamArray.stream().sorted { upstream1, upstream2 -> upstream1.id - upstream2.id}.collect(Collectors.toList())
+        return upstreamArray.stream().sorted { upstream1, upstream2 -> upstream1.id - upstream2.id }.collect(Collectors.toList())
     }
 }

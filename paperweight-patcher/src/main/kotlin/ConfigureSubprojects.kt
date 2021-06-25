@@ -32,7 +32,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.UnknownDomainObjectException
 import org.gradle.api.plugins.JavaLibraryPlugin
-import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
@@ -183,13 +182,13 @@ private fun Project.configureServerProject() {
         mergeServiceFiles()
         manifest {
             attributes(
-                    "Main-Class" to "org.bukkit.craftbukkit.Main",
-                    "Implementation-Title" to "CraftBukkit",
-                    "Implementation-Version" to toothpick.forkVersion,
-                    "Implementation-Vendor" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date()),
-                    "Specification-Title" to "Bukkit",
-                    "Specification-Version" to "${project.rootProject.toothpick.minecraftVersion}-${project.rootProject.toothpick.nmsRevision}",
-                    "Specification-Vendor" to "Bukkit Team"
+                "Main-Class" to "org.bukkit.craftbukkit.Main",
+                "Implementation-Title" to "CraftBukkit",
+                "Implementation-Version" to toothpick.forkVersion,
+                "Implementation-Vendor" to SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(Date()),
+                "Specification-Title" to "Bukkit",
+                "Specification-Version" to "${project.rootProject.toothpick.minecraftVersion}-${project.rootProject.toothpick.nmsRevision}",
+                "Specification-Vendor" to "Bukkit Team"
             )
         }
         from(project.buildDir.resolve("tmp/pom.xml")) {
@@ -214,26 +213,26 @@ private fun Project.configureServerProject() {
             artifactId == "maven-shade-plugin"
         }.forEach {
             it.search("executions").first()
-                    .search("execution").first()
-                    .search("configuration").first()
-                    .search("relocations").first()
-                    .elements("relocation").forEach { relocation ->
-                        val pattern = relocation.search("pattern").first().textContent
-                        val shadedPattern = relocation.search("shadedPattern").first().textContent
-                        val rawString = relocation.search("rawString").firstOrNull()?.textContent?.toBoolean() ?: false
-                        if (pattern != "org.bukkit.craftbukkit") { // We handle cb ourselves
-                            val excludes = if (rawString) listOf("net/minecraft/data/Main*") else emptyList()
-                            relocate(
+                .search("execution").first()
+                .search("configuration").first()
+                .search("relocations").first()
+                .elements("relocation").forEach { relocation ->
+                    val pattern = relocation.search("pattern").first().textContent
+                    val shadedPattern = relocation.search("shadedPattern").first().textContent
+                    val rawString = relocation.search("rawString").firstOrNull()?.textContent?.toBoolean() ?: false
+                    if (pattern != "org.bukkit.craftbukkit") { // We handle cb ourselves
+                        val excludes = if (rawString) listOf("net/minecraft/data/Main*") else emptyList()
+                        relocate(
                             ToothpickRelocator(
                                 pattern,
                                 shadedPattern.replace("\${minecraft_version}", toothpick.nmsPackage),
                                 rawString,
                                 excludes = excludes
                             )
-                            )
-                            relocationSet.add(PatchesMetadata.Relocation(pattern, shadedPattern, true))
-                        }
+                        )
+                        relocationSet.add(PatchesMetadata.Relocation(pattern, shadedPattern, true))
                     }
+                }
         }
         project.extensions.add("relocations", relocationSet)
     }
@@ -255,7 +254,7 @@ private fun Project.configureApiProject() {
     val jar by this.tasks.getting(Jar::class) {
         doFirst {
             buildDir.resolve("tmp/pom.properties")
-                    .writeText("version=${project.rootProject.toothpick.minecraftVersion}-${project.rootProject.toothpick.nmsRevision}")
+                .writeText("version=${project.rootProject.toothpick.minecraftVersion}-${project.rootProject.toothpick.nmsRevision}")
         }
         from(buildDir.resolve("tmp/pom.properties")) {
             into("META-INF/maven/${project.group}/${project.name}")

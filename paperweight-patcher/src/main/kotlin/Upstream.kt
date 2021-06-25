@@ -21,14 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.gradle.api.Project
 import java.io.File
 import java.io.FileWriter
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.stream.Collectors
+import org.gradle.api.Project
 
-open class Upstream(in_name: String, in_useBlackList: Boolean, in_list: String, in_rootProjectDir: File, in_branch: String, in_id: Int, in_project: Project) {
+open class Upstream(
+    in_name: String,
+    in_useBlackList: Boolean,
+    in_list: String,
+    in_rootProjectDir: File,
+    in_branch: String,
+    in_id: Int,
+    in_project: Project
+) {
     var name: String = in_name
     var useBlackList: Boolean = in_useBlackList
     private var list: ArrayList<String> = ArrayList(in_list.split(",".toRegex()))
@@ -40,7 +48,6 @@ open class Upstream(in_name: String, in_useBlackList: Boolean, in_list: String, 
         ?.sorted()?.map { patch -> patch.substring(7, patch.length) }?.collect(Collectors.toList())
     var apiList = list.stream().filter { patch -> patch.startsWith("api/") }
         ?.sorted()?.map { patch -> patch.substring(4, patch.length) }?.collect(Collectors.toList())
-
 
     var patchPath = Paths.get("$rootProjectDir/patches/$name/patches")
     var repoPath = Paths.get("$rootProjectDir/upstream/$name")
@@ -64,7 +71,7 @@ open class Upstream(in_name: String, in_useBlackList: Boolean, in_list: String, 
             Files.createFile(commitFilePath)
             commitHash = updateHashFile(commitFile)
         }
-        return commitHash;
+        return commitHash
     }
 
     public fun updateUpstreamCommitHash() {
@@ -92,12 +99,12 @@ open class Upstream(in_name: String, in_useBlackList: Boolean, in_list: String, 
 
     public fun getRepoServerPatches(): MutableList<String>? {
         return getRepoPatches(rootProjectDir.resolve("$repoPath/patches/server")).stream()
-            .sorted().map {patch -> patch.substring(5, patch.length) }.collect(Collectors.toList())
+            .sorted().map { patch -> patch.substring(5, patch.length) }.collect(Collectors.toList())
     }
 
     public fun getRepoAPIPatches(): MutableList<String>? {
         return getRepoPatches(rootProjectDir.resolve("$repoPath/patches/api")).stream()
-            .sorted().map {patch -> patch.substring(5, patch.length) }.collect(Collectors.toList())
+            .sorted().map { patch -> patch.substring(5, patch.length) }.collect(Collectors.toList())
     }
 
     private fun getRepoPatches(path: File): ArrayList<String> {

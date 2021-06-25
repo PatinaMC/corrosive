@@ -53,7 +53,8 @@ object PatchParser {
                 line.startsWith("Co-authored-by: ") -> {
                     coAuthors.add(
                         decodeStringIfNeeded(
-                            line.replace("Co-authored-by: ", "").split("<").toTypedArray()[0].trim { it <= ' ' })
+                            line.replace("Co-authored-by: ", "").split("<").toTypedArray()[0].trim { it <= ' ' }
+                        )
                     )
                 }
             }
@@ -82,19 +83,21 @@ object PatchParser {
             }
 
         override fun toString(): String {
-            return ("PatchInfo{"
-                    + "parent='"
-                    + parent
-                    + '\''
-                    + ", from='"
-                    + from
-                    + '\''
-                    + ", subject='"
-                    + subject
-                    + '\''
-                    + ", coAuthors="
-                    + coAuthors
-                    + '}')
+            return (
+                "PatchInfo{" +
+                    "parent='" +
+                    parent +
+                    '\'' +
+                    ", from='" +
+                    from +
+                    '\'' +
+                    ", subject='" +
+                    subject +
+                    '\'' +
+                    ", coAuthors=" +
+                    coAuthors +
+                    '}'
+                )
         }
     }
 }

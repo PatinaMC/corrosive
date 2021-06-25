@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import org.gradle.api.Project
 import java.io.File
+import org.gradle.api.Project
 
 class ToothpickSubproject {
     lateinit var project: Project
