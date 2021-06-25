@@ -73,6 +73,7 @@ open class ToothpickExtension(objects: ObjectFactory) {
         receiver(apiProject)
     }
 
+    /* ktlint-disable */
     val subprojects: Map<String, ToothpickSubproject>
         get() = if (::forkName.isInitialized) mapOf(
             "$forkName-API" to apiProject,
