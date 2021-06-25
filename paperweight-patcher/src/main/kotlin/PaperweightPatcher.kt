@@ -22,6 +22,7 @@
 
 package io.papermc.paperweight.patcher
 
+import ToothpickExtension
 import io.papermc.paperweight.DownloadService
 import io.papermc.paperweight.patcher.tasks.CheckoutRepo
 import io.papermc.paperweight.patcher.tasks.PaperweightPatcherUpstreamData
@@ -50,6 +51,7 @@ class PaperweightPatcher : Plugin<Project> {
 
     override fun apply(target: Project) {
         val patcher = target.extensions.create(Constants.EXTENSION, PaperweightPatcherExtension::class)
+        target.extensions.create<ToothpickExtension>("toothpick", target.objects)
 
         target.gradle.sharedServices.registerIfAbsent("download", DownloadService::class) {}
 
