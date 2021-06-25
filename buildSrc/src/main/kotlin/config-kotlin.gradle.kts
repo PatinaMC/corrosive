@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     idea
     id("org.gradle.kotlin.kotlin-dsl")
-    id("org.jlleitschuh.gradle.ktlint")
 }
 
 java {
@@ -50,18 +49,6 @@ tasks.withType<KotlinCompile> {
         useIR = true
         freeCompilerArgs = listOf("-Xopt-in=kotlin.io.path.ExperimentalPathApi")
     }
-}
-
-ktlint {
-    enableExperimentalRules.set(true)
-
-    disabledRules.add("no-wildcard-imports")
-}
-
-tasks.register("format") {
-    group = "formatting"
-    description = "Formats source code according to project style"
-    dependsOn(tasks.ktlintFormat)
 }
 
 idea {
