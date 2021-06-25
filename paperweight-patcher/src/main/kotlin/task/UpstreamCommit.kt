@@ -37,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 internal fun Project.createUpstreamCommitTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("upstreamCommit") {
+): Task = tasks.create("upstreamCommit_") {
     receiver(this)
     group = taskGroup
     doLast {

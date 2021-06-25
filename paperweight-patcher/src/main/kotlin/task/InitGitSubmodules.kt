@@ -32,7 +32,7 @@ import upstreams
 
 internal fun Project.createInitGitSubmodulesTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("initGitSubmodules") {
+): Task = tasks.create("initGitSubmodules_") {
     receiver(this)
     group = taskGroup
     var upstreamNotInit = false

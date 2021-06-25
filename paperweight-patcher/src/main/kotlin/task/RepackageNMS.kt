@@ -39,7 +39,7 @@ import java.net.URL
 @Suppress("UNUSED_VARIABLE")
 internal fun Project.createRepackageNMSTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("repackageNMS") {
+): Task = tasks.create("repackageNMS_") {
     receiver(this)
     group = taskGroup
     class Mapping(fullyQualifiedClassName: String) {

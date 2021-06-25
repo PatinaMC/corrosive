@@ -40,7 +40,7 @@ import java.nio.file.Paths
 
 internal fun Project.createApplyPatchesTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("applyPatches") {
+): Task = tasks.create("applyPatches_") {
     receiver(this)
     group = taskGroup
 

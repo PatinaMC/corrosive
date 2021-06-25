@@ -34,7 +34,7 @@ import toothpick
 
 internal fun Project.createPaperclipTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("paperclip") {
+): Task = tasks.create("paperclip_") {
     receiver(this)
     group = taskGroup
     doLast {

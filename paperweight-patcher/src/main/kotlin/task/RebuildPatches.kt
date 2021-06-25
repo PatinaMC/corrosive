@@ -38,7 +38,7 @@ import Upstream
 @Suppress("UNUSED_VARIABLE")
 internal fun Project.createRebuildPatchesTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("rebuildPatches") {
+): Task = tasks.create("rebuildPatches_") {
     receiver(this)
     group = taskGroup
     doLast {

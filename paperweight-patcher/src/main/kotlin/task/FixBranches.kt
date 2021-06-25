@@ -35,7 +35,7 @@ import ensureSuccess
 
 internal fun Project.createFixBranchesTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("fixBranches") {
+): Task = tasks.create("fixBranches_") {
     receiver(this)
     group = taskGroup
     val folderArray = arrayListOf("api", "server")

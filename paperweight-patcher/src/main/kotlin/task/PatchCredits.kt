@@ -39,7 +39,7 @@ import patchCreditsTemplate
 
 internal fun Project.createPatchCreditsTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("patchCredits") {
+): Task = tasks.create("patchCredits_") {
     receiver(this)
     group = taskGroup
 

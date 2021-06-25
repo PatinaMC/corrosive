@@ -42,7 +42,7 @@ import upstreams
 
 internal fun Project.createUpdateUpstreamTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("updateUpstream") {
+): Task = tasks.create("updateUpstream_") {
     receiver(this)
     group = taskGroup
     doLast {

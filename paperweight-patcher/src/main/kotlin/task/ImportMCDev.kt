@@ -39,7 +39,7 @@ import kotlin.streams.toList
 
 internal fun Project.createImportMCDevTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("importMCDev") {
+): Task = tasks.create("importMCDev_") {
     receiver(this)
     group = internalTaskGroup
     val upstreamServer = toothpick.serverProject.baseDir

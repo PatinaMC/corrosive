@@ -11,7 +11,7 @@ import upstreamDir
 
 internal fun Project.createSetupUpstreamTask(
     receiver: Task.() -> Unit = {}
-): Task = tasks.create("setupUpstream") {
+): Task = tasks.create("setupUpstream_") {
     receiver(this)
     group = taskGroup
     doLast {
