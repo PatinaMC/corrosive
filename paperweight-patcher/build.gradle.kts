@@ -30,3 +30,9 @@ dependencies {
     implementation("com.google.guava:guava:30.0-jre")
     implementation("commons-io:commons-io:2.8.0")
 }
+
+// Yatopia
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
+}
